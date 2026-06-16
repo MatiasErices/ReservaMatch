@@ -1,0 +1,59 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: sede-ms
+          uri: lb://sedeMS
+          predicates:
+            - Path=/api/v1/sedes/**
+
+        - id: usuario-ms
+          uri: lb://usuarioMS
+          predicates:
+            - Path=/api/v1/usuarios/**
+
+        - id: reserva-ms
+          uri: lb://reservaMS
+          predicates:
+            - Path=/api/v1/reservas/**
+        
+        - id: horario-ms
+          uri: lb://horarioMS
+          predicates:
+            - Path=/api/v1/horarios/**
+
+        - id: implemento-ms
+          uri: lb://implementoMS
+          predicates:
+            - Path=/api/v1/implementos/**
+
+        - id: arriendo_implemento-ms
+          uri: lb://arriendoImplementoMS
+          predicates:
+            - Path=/api/v1/arriendo-implementos/**
+
+        - id: cancha-ms
+          uri: lb://canchaMS
+          predicates:
+            - Path=/api/v1/canchas/** 
+
+        - id: pago-ms
+          uri: lb://pagoMS
+          predicates:
+            - Path=/api/v1/pagos/** 
+
+        
+
+
+
