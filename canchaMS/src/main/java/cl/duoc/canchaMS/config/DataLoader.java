@@ -9,6 +9,8 @@ import cl.duoc.canchaMS.model.TipoCancha;
 import cl.duoc.canchaMS.repository.CanchaRepository;
 import cl.duoc.canchaMS.repository.TipoCanchaRepository;
 
+// comentario
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
