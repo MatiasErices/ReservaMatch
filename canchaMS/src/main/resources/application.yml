@@ -1,17 +1,17 @@
 spring:
   application:
-    name: arriendoImplementoMS
+    name: canchaMS
   datasource:
-    url: jdbc:mysql://localhost:3306/arriendo_implemento_db
+    url: jdbc:mysql://localhost:3306/cancha_db
     username: root
-    password: 
+    password: ""
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
 server:
-  port: 8088
+  port: 8083
 
 springdoc:
   api-docs:
