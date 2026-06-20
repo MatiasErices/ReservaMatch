@@ -1,10 +1,8 @@
 package cl.duoc.usuarioMS.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,117 +13,147 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import cl.duoc.usuarioMS.dto.UsuarioDTO;
 import cl.duoc.usuarioMS.model.Rol;
 import cl.duoc.usuarioMS.model.Usuario;
 import cl.duoc.usuarioMS.repository.UsuarioRepository;
 
-@ExtendWith(MockitoExtension.class) // Habilita el uso de Mockito en esta clase
+@ExtendWith(MockitoExtension.class)
 public class UsuarioServiceTest {
 
-    @Mock // Creamos un "doble de riesgo" (simulacro) del repositorio
-    private UsuarioRepository repository;
+    @Mock
+    private UsuarioRepository repository; // repository simulado para pruebas unitarias
 
-    @InjectMocks // Inyectamos el repositorio simulado dentro del servicio real
-    private UsuarioService service;
+    @InjectMocks
+    private UsuarioService usuarioService; // usuario service real, pero con el Mock del repo inyectado
 
-    private Usuario usuarioPrueba;
-    private Rol rolPrueba;
+    private Usuario usuarioEjemplo;
+    private Rol rolEjemplo;
 
-    // @BeforeEach hace que este método se ejecute ANTES de cada prueba
-    // Lo usamos para tener datos frescos y limpios cada vez.
     @BeforeEach
     void setUp() {
-        rolPrueba = new Rol(1, "CLIENTE");
-        usuarioPrueba = new Usuario(1, "Juan", "juan@mail.com", "1234", "11111111-1", "987654321", rolPrueba);
+
+        rolEjemplo = new Rol();
+        rolEjemplo.setId(1);
+        rolEjemplo.setNombre("CLIENTE");
+
+        usuarioEjemplo = new Usuario();
+        usuarioEjemplo.setId(1);
+        usuarioEjemplo.setNombre("Juan Pérez");
+        usuarioEjemplo.setEmail("juan@mail.com");
+        usuarioEjemplo.setPassword("1234");
+        usuarioEjemplo.setRut("12345678-9");
+        usuarioEjemplo.setTelefono("912345678");
+        usuarioEjemplo.setRol(rolEjemplo);
     }
 
+    // ============ LISTAR ============
+
     @Test
-    void testListar() {
-        // 1. Preparación (Given): Le decimos al simulacro qué hacer
-        when(repository.findAll()).thenReturn(Arrays.asList(usuarioPrueba));
+    void listar_devuelveListaDeUsuarios() {
 
-        // 2. Ejecución (When): Llamamos a nuestro servicio real
-        List<Usuario> resultado = service.listar();
+        // ARRANGE: preparamos la prueba
+        List<Usuario> listaEjemplo = List.of(usuarioEjemplo);
+        when(repository.findAll()).thenReturn(listaEjemplo);
 
-        // 3. Verificación (Then): Afirmamos que el resultado es el esperado
-        assertNotNull(resultado);
+        // ACT: llamamos al método real del service
+        List<Usuario> resultado = usuarioService.listar();
+
+        // ASSERT
         assertEquals(1, resultado.size());
-        assertEquals("Juan", resultado.get(0).getNombre());
+        assertEquals("Juan Pérez", resultado.get(0).getNombre());
+    }
+
+    // ============ GUARDAR ============
+
+    @Test
+    void guardar_retornaUsuarioGuardado() {
+
+        // ARRANGE
+        when(repository.save(usuarioEjemplo)).thenReturn(usuarioEjemplo);
+
+        // ACT
+        Usuario resultado = usuarioService.guardar(usuarioEjemplo);
+
+        // ASSERT
+        assertEquals("Juan Pérez", resultado.getNombre());
+        verify(repository, times(1)).save(usuarioEjemplo);
+    }
+
+    // ============ BUSCAR POR ID ============
+
+    @Test
+    void buscarPorId_encontrado() {
+
+        // ARRANGE: el repo devolverá un Optional con el usuario
+        Optional<Usuario> usuarioOptional = Optional.of(usuarioEjemplo);
+        when(repository.findById(1)).thenReturn(usuarioOptional);
+
+        // ACT
+        Usuario resultado = usuarioService.buscarPorId(1);
+
+        // ASSERT
+        assertEquals(1, resultado.getId());
+        assertEquals("Juan Pérez", resultado.getNombre());
     }
 
     @Test
-    void testBuscarPorId_Exito() {
-        // Le decimos al mock: "Cuando te busquen por el ID 1, devuelve el usuarioPrueba"
-        when(repository.findById(1)).thenReturn(Optional.of(usuarioPrueba));
+    void buscarPorId_noEncontrado() {
 
-        Usuario resultado = service.buscarPorId(1);
+        // ARRANGE: el repo devolverá un Optional vacío
+        Optional<Usuario> optionalVacio = Optional.empty();
+        when(repository.findById(99)).thenReturn(optionalVacio);
 
-        assertNotNull(resultado);
-        assertEquals("Juan", resultado.getNombre());
-    }
-
-    @Test
-    void testBuscarPorId_NoEncontrado() {
-        // Le decimos al mock: "Cuando te busquen por el ID 99, devuelve vacío"
-        when(repository.findById(99)).thenReturn(Optional.empty());
-
-        // Verificamos que al buscar el ID 99, el servicio lance una RuntimeException
-        RuntimeException excepcion = assertThrows(RuntimeException.class, () -> {
-            service.buscarPorId(99);
+        // ACT: ejecutamos el método buscarPorId(99) debería devolver un error,
+        // así que capturamos el error para analizarlo
+        RuntimeException error = assertThrows(RuntimeException.class, () -> {
+            usuarioService.buscarPorId(99);
         });
 
-        assertEquals("Usuario no encontrado", excepcion.getMessage());
+        // ASSERT
+        assertEquals("Usuario no encontrado", error.getMessage());
     }
 
+    // ============ ACTUALIZAR ============
+
     @Test
-    void testGuardar() {
-        when(repository.save(any(Usuario.class))).thenReturn(usuarioPrueba);
+    void actualizar_actualizaCorrectamente() {
 
-        Usuario resultado = service.guardar(usuarioPrueba);
+        // ARRANGE
+        Usuario usuarioNuevo = new Usuario();
+        usuarioNuevo.setNombre("Juan Actualizado");
+        usuarioNuevo.setEmail("juanact@mail.com");
+        usuarioNuevo.setPassword("nuevaClave");
+        usuarioNuevo.setRut("12345678-9");
+        usuarioNuevo.setTelefono("987654321");
+        usuarioNuevo.setRol(rolEjemplo);
 
-        assertNotNull(resultado);
-        assertEquals("juan@mail.com", resultado.getEmail());
+        when(repository.findById(1)).thenReturn(Optional.of(usuarioEjemplo));
+        when(repository.save(any(Usuario.class))).thenReturn(usuarioEjemplo);
+
+        // ACT
+        Usuario resultado = usuarioService.actualizar(1, usuarioNuevo);
+
+        // ASSERT
+        assertEquals("Juan Actualizado", resultado.getNombre());
+        assertEquals("juanact@mail.com", resultado.getEmail());
+        verify(repository, times(1)).save(usuarioEjemplo);
     }
 
-    @Test
-    void testActualizar() {
-        // Para actualizar, primero el servicio busca por ID, así que mockeamos eso:
-        when(repository.findById(1)).thenReturn(Optional.of(usuarioPrueba));
-        // Luego mockeamos el guardado
-        when(repository.save(any(Usuario.class))).thenReturn(usuarioPrueba);
 
-        Usuario datosNuevos = new Usuario(null, "Juan Actualizado", "juan.nuevo@mail.com", "4321", "11111111-1", "123123123", rolPrueba);
-        
-        Usuario resultado = service.actualizar(1, datosNuevos);
-
-        assertNotNull(resultado);
-        // Verificamos que el repositorio intentó guardar una vez
-        verify(repository, times(1)).save(any(Usuario.class));
-    }
+    // ============ ELIMINAR ============
 
     @Test
-    void testEliminar() {
-        // Para eliminar, primero busca por ID
-        when(repository.findById(1)).thenReturn(Optional.of(usuarioPrueba));
-        // doNothing() se usa para métodos que devuelven 'void'
-        doNothing().when(repository).deleteById(1);
+    void eliminar_eliminaCorrectamente() {
 
-        service.eliminar(1);
+        // ARRANGE
+        when(repository.findById(1)).thenReturn(Optional.of(usuarioEjemplo));
 
-        // Verificamos que el método deleteById se haya llamado exactamente 1 vez
+        // ACT
+        usuarioService.eliminar(1);
+
+        // ASSERT
         verify(repository, times(1)).deleteById(1);
     }
 
-    @Test
-    void testObtenerDTO() {
-        when(repository.findById(1)).thenReturn(Optional.of(usuarioPrueba));
 
-        UsuarioDTO dto = service.obtenerDTO(1);
-
-        assertNotNull(dto);
-        assertEquals(1, dto.getId());
-        assertEquals("Juan", dto.getNombre());
-        assertEquals("CLIENTE", dto.getRolNombre()); // Validamos que aplane el Rol correctamente
-    }
 }

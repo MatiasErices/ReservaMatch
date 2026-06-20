@@ -39,6 +39,8 @@ public class UsuarioService {
         usuarioExistente.setRol(usuarioNuevo.getRol());
 
         return repository.save(usuarioExistente);
+
+    
     }
 
     public void eliminar(Integer id) {
