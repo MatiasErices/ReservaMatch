@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import cl.duoc.implementoMS.dto.ImplementoDTO;
+
 import cl.duoc.implementoMS.model.Implemento;
 import cl.duoc.implementoMS.repository.ImplementoRepository;
 
