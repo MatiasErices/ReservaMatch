@@ -12,6 +12,7 @@ import cl.duoc.horarioMS.service.HorarioBloqueService;
 
 @RestController
 @RequestMapping("/api/v1/horarios")
+
 public class HorarioBloqueController {
 
     @Autowired
