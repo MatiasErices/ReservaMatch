@@ -1,4 +1,4 @@
-package cl.duoc.horarioMS.config;
+package cl.duoc.canchaMS.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("HorarioMS API")
+                        .title("CanchaMS API")
                         .version("1.0")
-                        .description("API para la gestión de horarios en el sistema HorarioMS"));
+                        .description("API for CanchaMS application"));
     }
+   
 }
