@@ -1,4 +1,4 @@
-package cl.duoc.arriendoImplementoMS.config;
+package cl.duoc.pagoMS.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +13,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("ArriendoImplementoMS API")
+                        .title("PagoMS API")
                         .version("1.0")
-                        .description("API para la gestión de arriendos de implementos en el sistema ArriendoImplementoMS"));
+                        .description("API para la gestión de pagos en el sistema PagoMS"));
     }
 
 }

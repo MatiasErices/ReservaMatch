@@ -17,4 +17,5 @@ public class SwaggerConfig {
                         .version("1.0")
                         .description("API para la gestión de horarios en el sistema HorarioMS"));
     }
+
 }

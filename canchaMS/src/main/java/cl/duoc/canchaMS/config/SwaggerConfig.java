@@ -15,7 +15,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("CanchaMS API")
                         .version("1.0")
-                        .description("API for CanchaMS application"));
+                        .description("API para la gestión de canchas en el sistema CanchaMS"));
     }
-   
 }

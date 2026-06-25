@@ -1,5 +1,6 @@
 package cl.duoc.pagoMS.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,8 +20,10 @@ public class TipoPago {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identificador único del tipo de pago", example = "1")
     private Integer id;
 
     @Column(nullable = false)
+    @Schema(description = "Nombre del tipo de pago", example = "Tarjeta de crédito")
     private String nombre;
 }

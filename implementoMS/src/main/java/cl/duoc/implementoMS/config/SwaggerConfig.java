@@ -15,6 +15,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("ImplementoMS API")
                         .version("1.0")
-                        .description("API for ImplementoMS application"));
+                        .description("API para la gestión de implementos en el sistema ImplementoMS"));
     }
+
 }

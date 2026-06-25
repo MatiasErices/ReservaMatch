@@ -9,16 +9,13 @@ import io.swagger.v3.oas.models.info.Info;
 @Configuration
 public class SwaggerConfig {
 
-    @Bean
-    public OpenAPI customOpenAPI(){
-        
-        return new OpenAPI()
-            .info(new Info()
-                .title("MicroServicio de Reservas")
-                .version("1.0")
-                .description("Documentacion de API Reservas")
-            
-            );
 
-}
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("ReservaMS API")
+                        .version("1.0")
+                        .description("API para la gestión de reservas en el sistema ReservaMS"));
+    }
 }
