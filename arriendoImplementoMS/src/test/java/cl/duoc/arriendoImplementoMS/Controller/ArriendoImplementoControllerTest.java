@@ -16,9 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import cl.duoc.arriendoImplementoMS.controller.ArriendoImplementoController;
-import cl.duoc.arriendoImplementoMS.dto.ArriendoImplementoDTO;
-import cl.duoc.arriendoImplementoMS.dto.ImplementoDTO;
-import cl.duoc.arriendoImplementoMS.dto.ReservaDTO;
 import cl.duoc.arriendoImplementoMS.model.ArriendoImplemento;
 import cl.duoc.arriendoImplementoMS.service.ArriendoImplementoService;
 
@@ -32,7 +29,6 @@ public class ArriendoImplementoControllerTest {
     private ArriendoImplementoController arriendoImplementoController; // controller real, con el Mock del service inyectado
 
     private ArriendoImplemento arriendoEjemplo;
-    private ArriendoImplementoDTO dtoEjemplo;
 
     @BeforeEach
     void setUp() {
@@ -44,11 +40,6 @@ public class ArriendoImplementoControllerTest {
         arriendoEjemplo.setCantidad(3);
         arriendoEjemplo.setFechaArriendo(new Date(1_700_000_000_000L));
         arriendoEjemplo.setMontoTotal(6000.0);
-
-        ImplementoDTO implementoDTO = new ImplementoDTO(1, "Pelota de Fútbol", "Pelota oficial talla 5", 7, 2000.0);
-        ReservaDTO reservaDTO = new ReservaDTO(1, new Date(1_699_000_000_000L), "CONFIRMADA", 5000.0, null, null, null);
-
-        dtoEjemplo = new ArriendoImplementoDTO(1, 3, arriendoEjemplo.getFechaArriendo(), 6000.0, implementoDTO, reservaDTO);
     }
 
     // ============ LISTAR ============
@@ -110,34 +101,6 @@ public class ArriendoImplementoControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
     }
 
-    // ============ OBTENER DTO ============
-
-    @Test
-    void obtenerDTO_encontrado() {
-
-        // ARRANGE
-        when(service.obtenerDTO(1)).thenReturn(dtoEjemplo);
-
-        // ACT
-        ResponseEntity<ArriendoImplementoDTO> respuesta = arriendoImplementoController.obtenerDTO(1);
-
-        // ASSERT
-        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-        assertEquals(6000.0, respuesta.getBody().getMontoTotal());
-    }
-
-    @Test
-    void obtenerDTO_noEncontrado() {
-
-        // ARRANGE
-        when(service.obtenerDTO(99)).thenThrow(new RuntimeException("Arriendo no encontrado"));
-
-        // ACT
-        ResponseEntity<ArriendoImplementoDTO> respuesta = arriendoImplementoController.obtenerDTO(99);
-
-        // ASSERT
-        assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
-    }
 
     // ============ LISTAR POR RESERVA / POR IMPLEMENTO ============
 

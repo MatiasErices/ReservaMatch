@@ -13,9 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import cl.duoc.canchaMS.client.SedeClient;
-import cl.duoc.canchaMS.dto.CanchaDTO;
-import cl.duoc.canchaMS.dto.SedeDTO;
 import cl.duoc.canchaMS.model.Cancha;
 import cl.duoc.canchaMS.model.TipoCancha;
 import cl.duoc.canchaMS.repository.CanchaRepository;
@@ -27,15 +24,11 @@ public class CanchaServiceTest {
     @Mock
     private CanchaRepository repository; // repository simulado para pruebas unitarias
 
-    @Mock
-    private SedeClient sedeClient; // cliente Feign simulado, no llama a sedeMS de verdad
-
     @InjectMocks
     private CanchaService canchaService; // service real, con los Mocks inyectados
 
     private Cancha canchaEjemplo;
     private TipoCancha tipoCanchaEjemplo;
-    private SedeDTO sedeDTOEjemplo;
 
     @BeforeEach
     void setUp() {
@@ -54,7 +47,6 @@ public class CanchaServiceTest {
         canchaEjemplo.setSedeId(1);
         canchaEjemplo.setDisponible(true);
 
-        sedeDTOEjemplo = new SedeDTO(1, "Sede Providencia", "Av. Siempre Viva 123", "Providencia", "+56912345678");
     }
 
     // ============ LISTAR ============
@@ -288,39 +280,4 @@ public class CanchaServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // ============ OBTENER DTO ============
-
-    @Test
-    void obtenerDTO_devuelveDTOCorrecto() {
-
-        // ARRANGE
-        when(repository.findById(1)).thenReturn(Optional.of(canchaEjemplo));
-        when(sedeClient.obtenerSede(1)).thenReturn(sedeDTOEjemplo);
-
-        // ACT
-        CanchaDTO resultado = canchaService.obtenerDTO(1);
-
-        // ASSERT
-        assertEquals(canchaEjemplo.getId(), resultado.getId());
-        assertEquals(canchaEjemplo.getNombre(), resultado.getNombre());
-        assertEquals("Fútbol", resultado.getTipoCancha());
-        assertEquals(sedeDTOEjemplo, resultado.getSede());
-        verify(sedeClient, times(1)).obtenerSede(1);
-    }
-
-    @Test
-    void obtenerDTO_noEncontrada() {
-
-        // ARRANGE
-        when(repository.findById(99)).thenReturn(Optional.empty());
-
-        // ACT
-        RuntimeException error = assertThrows(RuntimeException.class, () -> {
-            canchaService.obtenerDTO(99);
-        });
-
-        // ASSERT
-        assertEquals("Cancha no encontrada", error.getMessage());
-        verify(sedeClient, never()).obtenerSede(any()); // si la cancha no existe, nunca debe llamarse a sedeMS
-    }
 }

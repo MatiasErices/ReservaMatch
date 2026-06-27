@@ -1,12 +1,11 @@
 package cl.duoc.reservaMS.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Date;
 import java.util.List;
-
+import static org.mockito.Mockito.doThrow;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -154,7 +153,20 @@ public class ReservaControllerTest {
         
     }
 
-    @Test 
+    @Test
+    void guardar_devuelveBadRequestCuandoFalla() {
+
+        // ARRANGE
+        when(service.guardar(reservaEjemplo)).thenThrow(new RuntimeException("Cancha no disponible"));
+
+        // ACT
+        ResponseEntity<Reserva> respuesta = reservaController.guardar(reservaEjemplo);
+
+        // ASSERT
+        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
+    }
+
+    @Test
     void confirmarReserva_devuelveReservaConfirmada() {
 
         // ARRANGE
@@ -168,6 +180,19 @@ public class ReservaControllerTest {
         assertEquals(reservaEjemplo, respuesta.getBody());
         
     }
+
+    @Test
+    void confirmarReserva_devuelveNotFoundCuandoNoExiste() {
+
+        // ARRANGE
+        when(service.confirmar(99)).thenThrow(new RuntimeException("Reserva no encontrada"));
+
+        // ACT
+        ResponseEntity<Reserva> respuesta = reservaController.confirmar(99);
+
+        // ASSERT
+        assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
+}
 
 
     @Test
@@ -186,6 +211,19 @@ public class ReservaControllerTest {
     }
 
     @Test
+    void cancelarReserva_devuelveNotFoundCuandoNoExiste() {
+
+        // ARRANGE
+        when(service.cancelar(99)).thenThrow(new RuntimeException("Reserva no encontrada"));
+
+        // ACT
+        ResponseEntity<Reserva> respuesta = reservaController.cancelar(99);
+
+        // ASSERT
+        assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
+    }
+
+    @Test
     void eliminarReserva_devuelveReservaEliminada() {
 
         // ARRANGE
@@ -200,6 +238,21 @@ public class ReservaControllerTest {
         assertEquals(null, respuesta.getBody());  
         
     }
+
+    @Test
+    void eliminarReserva_devuelveNotFoundCuandoNoExiste() {
+
+        // ARRANGE
+        doThrow(new RuntimeException("Reserva no encontrada")).when(service).eliminar(99);
+
+        // ACT
+        ResponseEntity<Void> respuesta = reservaController.eliminar(99);
+
+        // ASSERT
+        assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
+    }
+
+
 
 
 

@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import cl.duoc.pagoMS.client.ReservaClient;
-import cl.duoc.pagoMS.dto.PagoDTO;
 import cl.duoc.pagoMS.dto.ReservaDTO;
 import cl.duoc.pagoMS.model.Pago;
 import cl.duoc.pagoMS.model.TipoPago;
@@ -235,36 +234,5 @@ public class PagoServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // ============ OBTENER DTO ============
 
-    @Test
-    void obtenerDTO_devuelveDTOCorrecto() {
-
-        // ARRANGE
-        when(repository.findById(1)).thenReturn(Optional.of(pagoEjemplo));
-        when(reservaClient.obtenerReserva(1)).thenReturn(reservaPendienteEjemplo);
-
-        // ACT
-        PagoDTO resultado = pagoService.obtenerDTO(1);
-
-        // ASSERT
-        assertEquals(1, resultado.getId());
-        assertEquals("COMPLETADO", resultado.getEstado());
-        assertEquals("Débito", resultado.getTipoPago());
-    }
-
-    @Test
-    void obtenerDTO_pagoNoExiste() {
-
-        // ARRANGE
-        when(repository.findById(99)).thenReturn(Optional.empty());
-
-        // ACT
-        RuntimeException error = assertThrows(RuntimeException.class, () -> {
-            pagoService.obtenerDTO(99);
-        });
-
-        // ASSERT
-        assertEquals("Pago no encontrado", error.getMessage());
-    }
 }

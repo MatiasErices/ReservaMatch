@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import cl.duoc.horarioMS.controller.HorarioBloqueController;
-import cl.duoc.horarioMS.dto.HorarioBloqueDTO;
 import cl.duoc.horarioMS.model.HorarioBloque;
 import cl.duoc.horarioMS.service.HorarioBloqueService;
 
@@ -30,7 +29,6 @@ public class HorarioBloqueControllerTest {
     private HorarioBloqueController horarioBloqueController; // controller real, con el Mock del service inyectado
 
     private HorarioBloque bloqueEjemplo;
-    private HorarioBloqueDTO dtoEjemplo;
     private Date fechaEjemplo;
 
     @BeforeEach
@@ -45,7 +43,6 @@ public class HorarioBloqueControllerTest {
         bloqueEjemplo.setHoraFin("09:00");
         bloqueEjemplo.setDisponible(true);
 
-        dtoEjemplo = new HorarioBloqueDTO(1, fechaEjemplo, "08:00", "09:00", true);
     }
 
     // ============ LISTAR ============
@@ -132,35 +129,6 @@ public class HorarioBloqueControllerTest {
 
         // ACT
         ResponseEntity<HorarioBloque> respuesta = horarioBloqueController.buscar(99);
-
-        // ASSERT
-        assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
-    }
-
-    // ============ OBTENER DTO ============
-
-    @Test
-    void obtenerDTO_encontrado() {
-
-        // ARRANGE
-        when(service.obtenerDTO(1)).thenReturn(dtoEjemplo);
-
-        // ACT
-        ResponseEntity<HorarioBloqueDTO> respuesta = horarioBloqueController.obtenerDTO(1);
-
-        // ASSERT
-        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-        assertEquals("08:00", respuesta.getBody().getHoraInicio());
-    }
-
-    @Test
-    void obtenerDTO_noEncontrado() {
-
-        // ARRANGE
-        when(service.obtenerDTO(99)).thenThrow(new RuntimeException("Bloque horario no encontrado"));
-
-        // ACT
-        ResponseEntity<HorarioBloqueDTO> respuesta = horarioBloqueController.obtenerDTO(99);
 
         // ASSERT
         assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());

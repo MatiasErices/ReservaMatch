@@ -14,5 +14,6 @@ public class ReservaDTO {
     private Double montoTotal;
     private Integer usuarioId;
     private Integer canchaId;
+    private Integer sedeId;
     private Integer horaBloqueId;
 }

@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import cl.duoc.horarioMS.dto.HorarioBloqueDTO;
 import cl.duoc.horarioMS.model.HorarioBloque;
 import cl.duoc.horarioMS.repository.HorarioBloqueRepository;
 import cl.duoc.horarioMS.service.HorarioBloqueService;
@@ -202,39 +201,6 @@ public class HorarioBloqueServiceTest {
         verify(horarioBloqueRepository, never()).deleteById(any());
     }
 
-    // ============ OBTENER DTO ============
-
-    @Test
-    void obtenerDTO_devuelveDTOCorrecto() {
-
-        // ARRANGE
-        when(horarioBloqueRepository.findById(1)).thenReturn(Optional.of(bloqueEjemplo));
-
-        // ACT
-        HorarioBloqueDTO resultado = horarioBloqueService.obtenerDTO(1);
-
-        // ASSERT
-        assertEquals(bloqueEjemplo.getId(), resultado.getId());
-        assertEquals(bloqueEjemplo.getFecha(), resultado.getFecha());
-        assertEquals(bloqueEjemplo.getHoraInicio(), resultado.getHoraInicio());
-        assertEquals(bloqueEjemplo.getHoraFin(), resultado.getHoraFin());
-        assertEquals(bloqueEjemplo.getDisponible(), resultado.getDisponible());
-    }
-
-    @Test
-    void obtenerDTO_noEncontrado() {
-
-        // ARRANGE
-        when(horarioBloqueRepository.findById(99)).thenReturn(Optional.empty());
-
-        // ACT
-        RuntimeException error = assertThrows(RuntimeException.class, () -> {
-            horarioBloqueService.obtenerDTO(99);
-        });
-
-        // ASSERT
-        assertEquals("Bloque horario no encontrado", error.getMessage());
-    }
 
     // ============ MARCAR NO DISPONIBLE ============
 

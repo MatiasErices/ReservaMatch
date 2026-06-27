@@ -63,11 +63,11 @@ public class SedeServiceTest {
     @Test
     void buscarPorId_noEncontrado(){
 
-        //ARRANGE: el repo devolvera un Optional vacio
+        //ARRANGE:
         Optional<Sede> optionalVacio = Optional.empty();
         when(service.findById(99)).thenReturn(optionalVacio);
 
-        //ACT: ejecutamos el metodo buscarPorId(99) deberia devolver un error, 
+        //ACT: ejecutamos el metodo buscarPorId(99) deberia devolver un error,
         // asi que capturamos el error para analizarlo
         RuntimeException error = assertThrows(RuntimeException.class, () -> {
         sedeService.buscarPorId(99);
@@ -95,7 +95,7 @@ public class SedeServiceTest {
 
     }
 
-    @Test 
+    @Test
     void eliminarSede_noEncontrada(){
 
         //ARRANGE: el repo devolvera un Optional vacio al buscar por id 99
@@ -157,6 +157,19 @@ public class SedeServiceTest {
     assertEquals("Providencia", resultado.getComuna());
     assertEquals("987654321", resultado.getTelefono());
 }
+
+    @Test
+    void actualizarSede_noEncontrada() {
+        // ARRANGE
+        when(service.findById(99)).thenReturn(Optional.empty());
+
+        // ACT & ASSERT
+        RuntimeException error = assertThrows(RuntimeException.class, () -> {
+            sedeService.actualizar(99, new Sede());
+        });
+
+        assertEquals("Sede no encontrada", error.getMessage());
+    }
 
     @Test
     void listarPorComuna(){

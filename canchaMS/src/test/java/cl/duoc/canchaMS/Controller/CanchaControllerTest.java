@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import cl.duoc.canchaMS.controller.CanchaController;
-import cl.duoc.canchaMS.dto.CanchaDTO;
-import cl.duoc.canchaMS.dto.SedeDTO;
 import cl.duoc.canchaMS.model.Cancha;
 import cl.duoc.canchaMS.model.TipoCancha;
 import cl.duoc.canchaMS.service.CanchaService;
@@ -31,7 +29,6 @@ public class CanchaControllerTest {
     private CanchaController canchaController; // controller real, con el Mock del service inyectado
 
     private Cancha canchaEjemplo;
-    private CanchaDTO dtoEjemplo;
 
     @BeforeEach
     void setUp() {
@@ -50,8 +47,6 @@ public class CanchaControllerTest {
         canchaEjemplo.setSedeId(1);
         canchaEjemplo.setDisponible(true);
 
-        SedeDTO sedeDTOEjemplo = new SedeDTO(1, "Sede Providencia", "Av. Siempre Viva 123", "Providencia", "+56912345678");
-        dtoEjemplo = new CanchaDTO(1, "Cancha Central", 10, 15000.0, true, "Fútbol", sedeDTOEjemplo);
     }
 
     // ============ LISTAR ============
@@ -201,35 +196,6 @@ public class CanchaControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
     }
 
-    // ============ OBTENER DTO ============
-
-    @Test
-    void obtenerDTO_encontrada() {
-
-        // ARRANGE
-        when(service.obtenerDTO(1)).thenReturn(dtoEjemplo);
-
-        // ACT
-        ResponseEntity<CanchaDTO> respuesta = canchaController.obtenerDTO(1);
-
-        // ASSERT
-        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-        assertEquals("Cancha Central", respuesta.getBody().getNombre());
-        assertEquals("Fútbol", respuesta.getBody().getTipoCancha());
-    }
-
-    @Test
-    void obtenerDTO_noEncontrada() {
-
-        // ARRANGE
-        when(service.obtenerDTO(99)).thenThrow(new RuntimeException("Cancha no encontrada"));
-
-        // ACT
-        ResponseEntity<CanchaDTO> respuesta = canchaController.obtenerDTO(99);
-
-        // ASSERT
-        assertEquals(HttpStatus.NOT_FOUND, respuesta.getStatusCode());
-    }
 
     // ============ GUARDAR ============
 

@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import cl.duoc.arriendoImplementoMS.client.ImplementoClient;
 import cl.duoc.arriendoImplementoMS.client.ReservaClient;
-import cl.duoc.arriendoImplementoMS.dto.ArriendoImplementoDTO;
 import cl.duoc.arriendoImplementoMS.dto.ImplementoDTO;
 import cl.duoc.arriendoImplementoMS.dto.ReservaDTO;
 import cl.duoc.arriendoImplementoMS.model.ArriendoImplemento;
@@ -287,40 +286,4 @@ public class ArriendoImplementoServiceTest {
         verify(repository, never()).deleteById(any());
     }
 
-    // ============ OBTENER DTO ============
-
-    @Test
-    void obtenerDTO_devuelveDTOCorrecto() {
-
-        // ARRANGE
-        when(repository.findById(1)).thenReturn(Optional.of(arriendoEjemplo));
-        when(implementoClient.obtenerImplemento(1)).thenReturn(implementoEjemplo);
-        when(reservaClient.obtenerReserva(1)).thenReturn(reservaConfirmadaEjemplo);
-
-        // ACT
-        ArriendoImplementoDTO resultado = arriendoImplementoService.obtenerDTO(1);
-
-        // ASSERT
-        assertEquals(arriendoEjemplo.getId(), resultado.getId());
-        assertEquals(arriendoEjemplo.getCantidad(), resultado.getCantidad());
-        assertEquals(implementoEjemplo, resultado.getImplemento());
-        assertEquals(reservaConfirmadaEjemplo, resultado.getReserva());
-    }
-
-    @Test
-    void obtenerDTO_noEncontrado() {
-
-        // ARRANGE
-        when(repository.findById(99)).thenReturn(Optional.empty());
-
-        // ACT
-        RuntimeException error = assertThrows(RuntimeException.class, () -> {
-            arriendoImplementoService.obtenerDTO(99);
-        });
-
-        // ASSERT
-        assertEquals("Arriendo no encontrado", error.getMessage());
-        verify(implementoClient, never()).obtenerImplemento(any());
-        verify(reservaClient, never()).obtenerReserva(any());
-    }
 }

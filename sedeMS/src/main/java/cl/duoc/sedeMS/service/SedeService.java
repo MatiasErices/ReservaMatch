@@ -39,6 +39,7 @@ public class SedeService {
         return repository.save(sedeExistente);
     }
 
+
     public void eliminar(Integer id) {
         buscarPorId(id);
         repository.deleteById(id);

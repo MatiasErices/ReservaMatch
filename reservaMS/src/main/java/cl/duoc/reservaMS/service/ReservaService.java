@@ -30,9 +30,6 @@ public class ReservaService {
     @Autowired
     private HorarioClient horarioClient;
 
-    // =========================================
-    // CRUD BÁSICO
-    // =========================================
 
     public List<Reserva> listar() {
         return repository.findAll();
@@ -75,6 +72,9 @@ public class ReservaService {
             throw new RuntimeException("Horario no disponible");
         }
 
+
+        reserva.setSedeId(cancha.getSede().getId());
+
         reserva.setMontoTotal(cancha.getPrecioPorHora());
 
         reserva.setEstado("PENDIENTE");
@@ -110,6 +110,7 @@ public class ReservaService {
                 reserva.getFechaReserva(),
                 reserva.getEstado(),
                 reserva.getMontoTotal(),
+                reserva.getSedeId(),
                 usuario,
                 cancha,
                 horario

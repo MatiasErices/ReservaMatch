@@ -12,6 +12,7 @@ public class ReservaDTO {
     private Date fechaReserva;
     private String estado;
     private Double montoTotal;
+    private Integer sedeId;
 
     private UsuarioDTO usuario;
     private CanchaDTO cancha;

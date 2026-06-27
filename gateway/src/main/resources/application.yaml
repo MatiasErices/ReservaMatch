@@ -41,17 +41,17 @@ spring:
         - id: arriendo_implemento-ms
           uri: lb://arriendoImplementoMS
           predicates:
-            - Path=/api/v1/arriendo-implementos/**
+            - Path=/api/v1/arriendos-implementos/**
 
         - id: cancha-ms
           uri: lb://canchaMS
           predicates:
-            - Path=/api/v1/canchas/** 
+            - Path=/api/v1/canchas/**
 
         - id: pago-ms
           uri: lb://pagoMS
           predicates:
-            - Path=/api/v1/pagos/** 
+            - Path=/api/v1/pagos/**
 
         
 
